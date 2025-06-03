@@ -47,6 +47,7 @@ frontend/index.html
 ```bash
 # Deploy to development environment
 ./scripts/deploy.sh dev
+# Note : the scripts must be run as an AWS user with the correct IAM permissions for the services specified in Terrafrom 
 
 # Deploy to production
 ./scripts/deploy.sh prod
