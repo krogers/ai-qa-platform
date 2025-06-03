@@ -27,7 +27,7 @@ Edit the configuration files:
 ```bash
 # Copy and edit Terraform variables
 cp infrastructure/terraform.tfvars.example infrastructure/terraform.tfvars
-# Edit with your AWS region, Pinecone credentials, etc.
+# Edit with your AWS region, env variables, etc.
 ```
 
 **Backend configuration:**
@@ -64,7 +64,7 @@ curl -X POST https://your-api-url/dev/graphql \
   -H 'Content-Type: application/json' \
   -H 'X-User-Id: 550e8400-e29b-41d4-a716-446655440000' \
   -d '{
-    "query": "mutation { askQuestion(input: { text: \"What is AI?\", userId: \"550e8400-e29b-41d4-a716-446655440000\" }) { text confidence sources } }"
+    "query": "mutation { askQuestion(input: { text: \"What does this application do?\", userId: \"550e8400-e29b-41d4-a716-446655440000\" }) { text confidence sources } }"
   }'
 
 # Or use the web frontend
@@ -190,9 +190,6 @@ environment          = "dev"
 ```bash
 # backend/.env
 NODE_ENV=development
-PINECONE_API_KEY=your-pinecone-api-key
-PINECONE_ENVIRONMENT=us-east1-gcp
-PINECONE_INDEX_NAME=ai-qa-knowledge-base-dev
 BEDROCK_REGION=us-east-1
 BEDROCK_MODEL_ID=anthropic.claude-3-5-sonnet-20241022-v2:0
 S3_KNOWLEDGE_BUCKET=ai-qa-platform-knowledge-base-dev
@@ -213,7 +210,6 @@ S3_USER_DATA_BUCKET=ai-qa-platform-user-data-dev
 - **Encryption**: All data encrypted in transit and at rest
 - **IAM**: Least-privilege access controls
 - **API Security**: CORS configuration and rate limiting
-- **Secrets**: Sensitive data stored in environment variables
 
 ## 📈 Monitoring
 
@@ -223,10 +219,7 @@ S3_USER_DATA_BUCKET=ai-qa-platform-user-data-dev
 
 ## 💰 Cost Optimization
 
-- **Serverless**: Pay-per-use Lambda functions
-- **S3 Lifecycle**: Automatic archival of old documents
-- **Bedrock Knowledge Base**: Optimized retrieval configuration
-- **Bedrock**: Token usage monitoring
+This application has been built to utilize as many AWS free tier services as possible. The primary cost center will be the hosted LLM usage.
 
 ## 🗂️ Documentation
 
@@ -234,14 +227,6 @@ S3_USER_DATA_BUCKET=ai-qa-platform-user-data-dev
 - **[Deployment Guide](docs/deployment.md)**: Detailed deployment instructions
 - **[API Reference](docs/api-reference.md)**: GraphQL API documentation
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Run the test suite
-6. Submit a pull request
 
 ## 📝 License
 
@@ -258,9 +243,7 @@ For issues and questions:
 
 - [x] Frontend web application (responsive SPA)
 - [x] Real-time chat interface
-- [ ] Advanced analytics dashboard
 - [ ] Multi-model LLM support
 - [ ] Enhanced security features
 - [ ] Performance optimizations
 - [ ] Mobile app development
-- [ ] Advanced document processing capabilities
