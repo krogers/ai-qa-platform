@@ -1,0 +1,11 @@
+input QuestionInput {
+  text: String!
+  userId: UUID!
+}
+
+type Mutation {
+  """
+  Submit a question and get an AI-generated answer
+  """
+  askQuestion(input: QuestionInput!): Answer!
+}

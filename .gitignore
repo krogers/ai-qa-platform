@@ -1,0 +1,259 @@
+# Dependencies
+node_modules/
+*/node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+build/
+out/
+*.js.map
+*.d.ts.map
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.*
+!.env.example
+
+# Terraform files
+*.tfvars
+!*.tfvars.example
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+terraform.tfplan
+*.tfplan
+*.tfstate.d/
+
+# Infrastructure builds
+infrastructure/builds/
+builds/
+
+# AWS
+.aws/
+aws-exports.js
+amplify-build-config.json
+amplify-gradle-config.json
+amplifytools.xcconfig
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+.classpath
+*.sublime-workspace
+*.sublime-project
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+.nyc_output/
+
+# Instrumentation
+lib-cov/
+
+# Grunt intermediate storage
+.grunt/
+
+# Bower dependency directory
+bower_components/
+
+# node-waf configuration
+.lock-wscript
+
+# Compiled binary addons
+build/Release/
+
+# Dependency directories
+jspm_packages/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm/
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# parcel-bundler cache
+.cache/
+.parcel-cache/
+
+# Next.js build output
+.next/
+
+# Nuxt.js build / generate output
+.nuxt/
+
+# Gatsby files
+.cache/
+public/
+
+# Storybook build outputs
+.out/
+.storybook-out/
+
+# Temporary folders
+tmp/
+temp/
+.tmp/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Lambda deployment packages
+*.zip
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test/
+
+# Jest coverage
+coverage/
+
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# CDK Context & Staging files  
+cdk.out/
+cdk.context.json
+
+# Local History for Visual Studio Code
+.history/
+
+# Security and sensitive files
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+config/production.json
+config/staging.json
+
+# Local development overrides
+docker-compose.override.yml
+.env.override
+
+# Documentation build
+docs/_build/
+site/
+
+# MacOS
+.AppleDouble
+.LSOverride
+Icon
+
+# Windows
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+
+# Data Files
+application_archtiecture.md
+kevin_rogers_personal_profile.md
+kevin_rogers_structured_cv.md

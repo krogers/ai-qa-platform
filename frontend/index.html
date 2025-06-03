@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Q&A Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #fefefe 0%, #f9f9f9 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding-top: 4rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: #2c3e50;
+            font-weight: 400;
+            opacity: 0;
+            animation: fadeInUp 2.5s ease-out forwards;
+            letter-spacing: -0.02em;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInFromBottom {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-container {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            animation: slideInFromBottom 1.5s ease-out 0.5s forwards;
+        }
+
+        .chat-messages {
+            min-height: 450px;
+            max-height: 550px;
+            overflow-y: auto;
+            margin-bottom: 2.5rem;
+            padding: 1.5rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .message {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-radius: 18px;
+            max-width: 85%;
+            opacity: 0;
+            animation: slideIn 0.6s ease-out forwards;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .message:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(25px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .message.user {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            margin-left: auto;
+            text-align: right;
+            box-shadow: 0 8px 20px rgba(52, 73, 94, 0.15);
+        }
+
+        .message.assistant {
+            background: rgba(255, 255, 255, 0.9);
+            color: #2c3e50;
+            border: 1px solid rgba(52, 73, 94, 0.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-end;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 1.5s forwards;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        #questionInput {
+            width: 100%;
+            padding: 1.25rem 1.75rem;
+            border: 2px solid rgba(44, 62, 80, 0.15);
+            border-radius: 30px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            transition: all 0.4s ease;
+            resize: none;
+            min-height: 56px;
+            max-height: 140px;
+            font-family: inherit;
+            font-weight: 400;
+        }
+
+        #questionInput:focus {
+            outline: none;
+            border-color: #34495e;
+            box-shadow: 0 0 0 4px rgba(52, 73, 94, 0.08);
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-1px);
+        }
+
+        #questionInput::placeholder {
+            color: #7f8c8d;
+            font-weight: 300;
+        }
+
+        #askButton {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            border: none;
+            padding: 1.25rem 2.5rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-weight: 500;
+            min-width: 120px;
+            box-shadow: 0 8px 20px rgba(52, 73, 94, 0.15);
+        }
+
+        #askButton:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(52, 73, 94, 0.25);
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        }
+
+        #askButton:active:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(52, 73, 94, 0.2);
+        }
+
+        #askButton:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 4px 10px rgba(52, 73, 94, 0.1);
+        }
+
+        .loading {
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            color: #34495e;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .loading.show {
+            display: flex;
+            animation: fadeInUp 0.4s ease-out forwards;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(52, 73, 94, 0.2);
+            border-top: 2px solid #34495e;
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: rgba(231, 76, 60, 0.05);
+            color: #c0392b;
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(231, 76, 60, 0.15);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 400;
+        }
+
+        .welcome-message {
+            text-align: center;
+            color: #7f8c8d;
+            font-weight: 300;
+            margin: 3rem 0;
+            font-size: 1.1rem;
+            opacity: 0;
+            animation: fadeIn 2s ease-in-out 2s forwards;
+        }
+
+        /* Enhanced Responsive Design */
+        
+        /* Large tablets and small laptops */
+        @media (max-width: 1024px) {
+            .container {
+                max-width: 800px;
+                padding-top: 3rem;
+            }
+            
+            .header h1 {
+                font-size: 2.8rem;
+            }
+            
+            .chat-container {
+                padding: 2.25rem;
+            }
+        }
+
+        /* Tablets */
+        @media (max-width: 768px) {
+            body {
+                padding: 1.5rem;
+            }
+            
+            .container {
+                padding-top: 2.5rem;
+            }
+            
+            .header {
+                margin-bottom: 3rem;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+                line-height: 1.2;
+            }
+            
+            .chat-container {
+                padding: 2rem;
+                border-radius: 20px;
+            }
+            
+            .chat-messages {
+                min-height: 400px;
+                max-height: 450px;
+                padding: 1.25rem;
+            }
+            
+            .message {
+                max-width: 90%;
+                padding: 1.25rem;
+                font-size: 0.9rem;
+            }
+            
+            .input-container {
+                flex-direction: column;
+                gap: 1.25rem;
+            }
+            
+            #questionInput {
+                padding: 1.125rem 1.5rem;
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+            
+            #askButton {
+                width: 100%;
+                padding: 1.125rem 2rem;
+                font-size: 1rem;
+            }
+        }
+
+        /* Mobile phones */
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem;
+                font-size: 14px;
+            }
+            
+            .container {
+                padding-top: 2rem;
+            }
+            
+            .header {
+                margin-bottom: 2.5rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+                line-height: 1.1;
+                margin-bottom: 0.5rem;
+            }
+            
+            .chat-container {
+                padding: 1.5rem;
+                border-radius: 18px;
+                box-shadow: 0 15px 45px rgba(0, 0, 0, 0.08);
+            }
+            
+            .chat-messages {
+                min-height: 350px;
+                max-height: 400px;
+                padding: 1rem;
+                border-radius: 16px;
+                margin-bottom: 2rem;
+            }
+            
+            .message {
+                max-width: 100%;
+                padding: 1rem;
+                border-radius: 14px;
+                margin-bottom: 1.5rem;
+                font-size: 0.9rem;
+                line-height: 1.5;
+            }
+            
+            .message:hover {
+                transform: none; /* Disable hover effects on mobile */
+            }
+            
+            .input-container {
+                gap: 1rem;
+            }
+            
+            #questionInput {
+                padding: 1rem 1.25rem;
+                border-radius: 25px;
+                font-size: 16px; /* Prevents zoom on iOS */
+                min-height: 50px;
+            }
+            
+            #askButton {
+                padding: 1rem 2rem;
+                border-radius: 25px;
+                font-size: 0.95rem;
+                min-width: 100px;
+            }
+            
+            #askButton:hover:not(:disabled) {
+                transform: none; /* Disable hover transform on mobile */
+                box-shadow: 0 8px 20px rgba(52, 73, 94, 0.15);
+            }
+            
+            .welcome-message {
+                font-size: 1rem;
+                margin: 2rem 0;
+            }
+            
+            .loading {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+            
+            .error {
+                padding: 1.25rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Very small phones */
+        @media (max-width: 360px) {
+            body {
+                padding: 0.75rem;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .chat-container {
+                padding: 1.25rem;
+            }
+            
+            .chat-messages {
+                min-height: 300px;
+                max-height: 350px;
+                padding: 0.75rem;
+            }
+            
+            .message {
+                padding: 0.875rem;
+                font-size: 0.85rem;
+            }
+            
+            #questionInput {
+                padding: 0.875rem 1rem;
+            }
+            
+            #askButton {
+                padding: 0.875rem 1.5rem;
+            }
+        }
+
+        /* Landscape orientation adjustments */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .container {
+                padding-top: 1rem;
+            }
+            
+            .header {
+                margin-bottom: 1.5rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .chat-messages {
+                min-height: 250px;
+                max-height: 300px;
+            }
+            
+            .chat-container {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Touch-friendly improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .message:hover,
+            .message.user:hover,
+            .message.assistant:hover {
+                transform: none;
+                box-shadow: inherit;
+            }
+            
+            #askButton:hover:not(:disabled) {
+                transform: none;
+            }
+            
+            #questionInput:focus {
+                transform: none;
+            }
+        }
+
+        /* Scrollbar styling */
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(52, 73, 94, 0.2);
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: rgba(52, 73, 94, 0.4);
+        }
+
+        /* Enhanced focus states */
+        .message.user:hover {
+            box-shadow: 0 12px 30px rgba(52, 73, 94, 0.2);
+        }
+
+        .message.assistant:hover {
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Hello there!</h1>
+        </div>
+        
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <div class="welcome-message">
+                    Ask me anything about Kevin Rogers and I'll be happy to help.<br>
+                    I'm also happy to answer questions about this application.
+                </div>
+            </div>
+            
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <span>Thinking...</span>
+            </div>
+            
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <textarea 
+                        id="questionInput" 
+                        placeholder="Type your question here..."
+                        rows="1"
+                    ></textarea>
+                </div>
+                <button id="askButton" type="button">Ask</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ChatApp {
+            constructor() {
+                this.apiUrl = 'https://oottikhn07.execute-api.us-east-1.amazonaws.com/dev/graphql';
+                this.userId = '550e8400-e29b-41d4-a716-446655440000';
+                
+                this.chatMessages = document.getElementById('chatMessages');
+                this.questionInput = document.getElementById('questionInput');
+                this.askButton = document.getElementById('askButton');
+                this.loadingIndicator = document.getElementById('loadingIndicator');
+                
+                this.init();
+            }
+            
+            init() {
+                // Event listeners
+                this.askButton.addEventListener('click', () => this.handleQuestion());
+                this.questionInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.handleQuestion();
+                    }
+                });
+                
+                // Auto-resize textarea
+                this.questionInput.addEventListener('input', () => {
+                    this.autoResizeTextarea();
+                });
+                
+                // Focus on input
+                this.questionInput.focus();
+            }
+            
+            autoResizeTextarea() {
+                this.questionInput.style.height = 'auto';
+                this.questionInput.style.height = Math.min(this.questionInput.scrollHeight, 120) + 'px';
+            }
+            
+            async handleQuestion() {
+                const question = this.questionInput.value.trim();
+                if (!question) return;
+                
+                // Add user message
+                this.addMessage(question, 'user');
+                
+                // Clear input and disable form
+                this.questionInput.value = '';
+                this.autoResizeTextarea();
+                this.setLoading(true);
+                
+                try {
+                    const answer = await this.askQuestion(question);
+                    this.addMessage(answer, 'assistant');
+                } catch (error) {
+                    console.error('Error:', error);
+                    this.showError('Sorry, I encountered an error. Please try again.');
+                } finally {
+                    this.setLoading(false);
+                    this.questionInput.focus();
+                }
+            }
+            
+            async askQuestion(question) {
+                const query = {
+                    query: `mutation {
+                        askQuestion(input: {
+                            text: "${question.replace(/"/g, '\\"')}"
+                            userId: "${this.userId}"
+                        }) {
+                            id
+                            questionId
+                            text
+                            timestamp
+                        }
+                    }`
+                };
+                
+                console.log('Sending query:', JSON.stringify(query, null, 2));
+                
+                try {
+                    const response = await fetch(this.apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(query)
+                    });
+                    
+                    console.log('Response status:', response.status);
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('HTTP error response:', errorText);
+                        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('Response data:', data);
+                    
+                    if (data.errors) {
+                        console.error('GraphQL errors:', data.errors);
+                        throw new Error(data.errors[0].message);
+                    }
+                    
+                    if (!data.data || !data.data.askQuestion) {
+                        console.error('Invalid response structure:', data);
+                        throw new Error('Invalid response from server');
+                    }
+                    
+                    return data.data.askQuestion.text;
+                } catch (error) {
+                    console.error('Request failed:', error);
+                    throw error;
+                }
+            }
+            
+            addMessage(text, type) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}`;
+                messageDiv.textContent = text;
+                
+                this.chatMessages.appendChild(messageDiv);
+                this.scrollToBottom();
+            }
+            
+            showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error';
+                errorDiv.textContent = message;
+                
+                this.chatMessages.appendChild(errorDiv);
+                this.scrollToBottom();
+                
+                // Remove error after 5 seconds
+                setTimeout(() => {
+                    if (errorDiv.parentNode) {
+                        errorDiv.parentNode.removeChild(errorDiv);
+                    }
+                }, 5000);
+            }
+            
+            setLoading(isLoading) {
+                this.askButton.disabled = isLoading;
+                this.questionInput.disabled = isLoading;
+                
+                if (isLoading) {
+                    this.loadingIndicator.classList.add('show');
+                    this.askButton.textContent = 'Asking...';
+                } else {
+                    this.loadingIndicator.classList.remove('show');
+                    this.askButton.textContent = 'Ask';
+                }
+            }
+            
+            scrollToBottom() {
+                this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+            }
+        }
+        
+        // Initialize the app when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new ChatApp();
+        });
+    </script>
+</body>
+</html>

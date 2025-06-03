@@ -1,0 +1,16 @@
+type Query {
+  """
+  Get conversation history for a user
+  """
+  getUserHistory(userId: UUID!): ConversationHistory!
+  
+  """
+  Search knowledge base for relevant documents
+  """
+  searchDocuments(query: String!, topK: Int = 5): [DocumentChunk!]!
+  
+  """
+  Health check endpoint
+  """
+  health: String!
+}

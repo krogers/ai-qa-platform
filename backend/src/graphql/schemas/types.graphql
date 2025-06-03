@@ -1,0 +1,41 @@
+scalar Date
+scalar UUID
+
+type Question {
+  id: UUID!
+  text: String!
+  userId: UUID!
+  timestamp: Date!
+}
+
+type Answer {
+  id: UUID!
+  questionId: UUID!
+  text: String!
+  timestamp: Date!
+}
+
+type DocumentChunk {
+  id: String!
+  content: String!
+  metadata: JSON!
+  score: Float
+}
+
+type ConversationMessage {
+  role: MessageRole!
+  content: String!
+  timestamp: Date!
+}
+
+type ConversationHistory {
+  userId: UUID!
+  messages: [ConversationMessage!]!
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+}
+
+scalar JSON
